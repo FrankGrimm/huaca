@@ -5,13 +5,16 @@
 
 void setup() {
   serial_setup();
+  rgb_setup();
   servo_setup();
+  dist_setup();
 }
 
 void loop() {
   serial_process();
   if (!servo_move()) {
     servo_report();
+    dist_report();
     delay(LOOP_DELAY);
   } else {
     servo_read();

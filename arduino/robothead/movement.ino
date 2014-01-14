@@ -6,13 +6,17 @@ int servo_current[SERVO_COUNT] = {-1, -1};
 int servo_targets[SERVO_COUNT] = {-1, -1};
 int servo_min[SERVO_COUNT] = {20, 20};
 int servo_max[SERVO_COUNT] = {165, 165};
-int servo_initial[SERVO_COUNT] = {125, 100};
+int servo_initial[SERVO_COUNT] = {80, 125};
+
+void servo_set_initial(int servoIdx) {
+  servo_targets[servoIdx] = servo_initial[servoIdx];
+}
 
 void servo_setup() {
   for(int servoIdx = 0; servoIdx < SERVO_COUNT; servoIdx++) {
     // initialize servo
     servos[servoIdx].attach(servo_pins[servoIdx]);
-    servo_targets[servoIdx] = servo_initial[servoIdx];
+    servo_set_initial(servoIdx);
     servo_set(servoIdx, servo_targets[servoIdx]);
     delay(1);
     servo_current[servoIdx] = servos[servoIdx].read();

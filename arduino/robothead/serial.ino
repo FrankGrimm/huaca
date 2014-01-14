@@ -8,42 +8,63 @@ void serial_process() {
   
   while (Serial.available() && current != '\n' && serialIdx < (SERVO_COUNT * 3 + 1)) {
     current = Serial.read();
-    if (current == 'S') serialIdx = 0;
+    if (current == 'S' || current == 'C') serialIdx = 0;
     
     if (serialIdx == 0) {
-      if (current == 'S') {
+      if (current == 'S' || current == 'C') {
         serial_buffer[serialIdx++] = current;
       }
     } else if (serialIdx > (SERVO_COUNT * 3 + 1)) {
       serialIdx = 0;
     } else {
-      if (serial_buffer[0] == 'S' && current >= '0' && current <= '9') {
+      if ((serial_buffer[0] == 'S' || serial_buffer[0] == 'C') && ((current >= '0' && current <= '9') || current == 'R')) {
         serial_buffer[serialIdx++] = current;
       }
     }
   }
  
-  if (serial_buffer[0] == 'S' && serialIdx >= (SERVO_COUNT * 3 + 1)) {   
+  if ((serial_buffer[0] == 'S' || serial_buffer[0] == 'C') && serialIdx >= (SERVO_COUNT * 3 + 1)) {   
     char targetString[4];
     
     for (int servoIdx = 0; servoIdx < SERVO_COUNT; servoIdx++) {
       for (int bufIdx = 0; bufIdx < 3; bufIdx++) {
         targetString[bufIdx] = serial_buffer[servoIdx * 3 + bufIdx + 1];
+        if (targetString[bufIdx] == 'R') {
+           // reset state and set servos to initial position
+           serial_buffer[0] = '\0';
+           serialIdx = 0;
+           for(int servoIdx = 0; servoIdx < SERVO_COUNT; servoIdx++) {
+              servo_set_initial(servoIdx);
+           }
+        }
       }
       targetString[3] = '\0';
       int target = atoi(targetString);
-      if (target <= 180 && target >= 0) {
-        servo_set_target(servoIdx, target);
+      if (serial_buffer[0] == 'S') {
+        if (target <= 180 && target >= 0) {
+          servo_set_target(servoIdx, target);
+        }
+        
+        
+      } else if (serial_buffer[0] == 'C' && servoIdx == 0) {
+        rgb_setcode(target);
+
+        // reset command char
+        serial_buffer[0] = '\0';
+        serialIdx = 0;
       }
     }
     
-    Serial.print("{\"command\": \"move\", \"params\": \"");
-    Serial.print(serial_buffer);
-    Serial.println("\"}");
+    if (serial_buffer[0] == 'S') {
+      Serial.print("{\"command\": \"move\", \"params\": \"");
+      Serial.print(serial_buffer);
+      Serial.println("\"}");
+    }
     
     // reset command char
     serial_buffer[0] = '\0';
     serialIdx = 0;
+    
   }
 
 }
