@@ -45,7 +45,7 @@ class SerialState {
           // incomplete last line, keep in buffer
           inputBuffer = line;
         }
-        tgt
+     
         lineIndex++;
       }
     }
