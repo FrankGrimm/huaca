@@ -29,17 +29,17 @@ void bumpers_read_all(void) {
 }
 
 void serial_output_bumpers() {
-  Serial.print("{\"bumbers\": ");
+  Serial.print("{\"bumpers\": ");
   Serial.print(BUMP_COUNT, DEC);
   Serial.print(", \"states\": [");
   for (int bumpIdx = 0; bumpIdx < BUMP_COUNT; bumpIdx++) {
-    Serial.print("{\"bumper");
-    Serial.print(bumpIdx, DEC);
-    Serial.print("\": ");
     if (bumperValues[bumpIdx]) {
-      Serial.print("1}");
+      Serial.print("1");
     } else {
-      Serial.print("0}");
+      Serial.print("0");
+    }
+    if (bumpIdx < (BUMP_COUNT - 1)) {
+      Serial.print(", ");
     }
   }
   Serial.println("]}");

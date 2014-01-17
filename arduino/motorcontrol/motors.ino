@@ -136,5 +136,5 @@ void serial_output_motors() {
   Serial.print(rpm[0], DEC);
   Serial.print(", ");
   Serial.print(rpm[1], DEC);
-  Serial.println("}");
+  Serial.println("]}");
 }
