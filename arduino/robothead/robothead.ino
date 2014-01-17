@@ -3,7 +3,7 @@
 #define LOOP_DELAY 250
 #define SERVO_COUNT 2
 
-#define SERIAL_BAUDRATE 9600
+#define SERIAL_BAUDRATE 19200
 
 //C00X000 - X = 0(off), 1(red), 2(green), 3(blue), 4(yellow), 5(purple), 6(aqua)
 //SXXXYYY - X = angle vertical, Y = horizontal
