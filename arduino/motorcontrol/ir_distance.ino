@@ -75,11 +75,10 @@ void serial_output_ir() {
   Serial.print(", \"values\": [");
   
   for (int irIdx = 0; irIdx < IR_COUNT; irIdx++) {
-    Serial.print("{\"ir");
-    Serial.print(irIdx, DEC);
-    Serial.print("\": ");
     Serial.print( ((int)(irValues[irIdx] * 1000.0)) / 1000.0 , DEC); // truncate after 3 decimal points
-    Serial.print("}");
+    if (irIdx < (IR_COUNT - 1)) {
+      Serial.print(", ");
+    }
   }
   
   Serial.println("]}");
