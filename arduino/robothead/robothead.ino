@@ -1,3 +1,5 @@
+// Arduino Duemilanove w/ ATmega328
+
 #define LOOP_DELAY 250
 #define SERVO_COUNT 2
 
