@@ -70,7 +70,7 @@ void serial_process() {
 }
 
 void serial_setup() {
-  Serial.begin(9600);
+  Serial.begin(SERIAL_BAUDRATE);
   delay(50);
   Serial.print("{\"init\": \"HEADCONTROLLER\", \"servos\": ");
   Serial.print(SERVO_COUNT, DEC);

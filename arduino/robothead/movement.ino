@@ -60,7 +60,7 @@ boolean servo_move() {
   }
   
   if (!moved && !reported_target_reached) {
-    Serial.println("{\"motorEvent\": \"targetReached\"});
+    Serial.println("{\"motorEvent\": \"targetReached\"}");
     reported_target_reached = true;
   }
   
