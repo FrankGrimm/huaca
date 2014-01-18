@@ -73,6 +73,9 @@ void serial_read() {
         case 103: // g - disable relay
           relayCommand = 2;
           break;
+        case 117:
+          serialCommand = 9;
+          break;
         default:
           serialCommand = -1;
           relayCommand = -1;

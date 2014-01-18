@@ -1,6 +1,7 @@
 #include <Servo.h>
 Servo servos[SERVO_COUNT];
 
+boolean reported_target_reached = false;
 int servo_pins[SERVO_COUNT] = {5, 6};
 int servo_current[SERVO_COUNT] = {-1, -1};
 int servo_targets[SERVO_COUNT] = {-1, -1};
@@ -29,6 +30,7 @@ void servo_set(int servoIdx, int pos) {
 
 void servo_set_target(int servoIdx, int target) {
   servo_targets[servoIdx] = constrain(target, servo_min[servoIdx], servo_max[servoIdx]);
+  reported_target_reached = false;
 }
 
 void servo_read() {
@@ -55,6 +57,11 @@ boolean servo_move() {
       }
       moved = true;
     }
+  }
+  
+  if (!moved && !reported_target_reached) {
+    Serial.println("{\"motorEvent\": \"targetReached\"});
+    reported_target_reached = true;
   }
   
   return moved;

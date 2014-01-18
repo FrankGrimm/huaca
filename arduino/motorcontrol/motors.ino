@@ -2,7 +2,7 @@
 #define M_E1 5
 #define M_M2 7
 #define M_E2 6
-#define M_SPEED 175
+#define M_SPEED 255
 
 volatile short m_cnt[] = {0, 0};
 
@@ -95,7 +95,7 @@ void motor_control() {
   
   m_ctl = get_keycommand();
   
-  if (m_ctl == 0) {
+  if (m_ctl == 9) {
     // follow close objects
     m_ctl = ir_getdir();
   }
