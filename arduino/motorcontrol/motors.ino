@@ -2,9 +2,12 @@
 #define M_E1 5
 #define M_M2 7
 #define M_E2 6
-#define M_SPEED 255
+#define M_SPEED 125
+#define M_SPEED_HIGH 255
 
 volatile short m_cnt[] = {0, 0};
+
+boolean highSpeedMode = false;
 
 unsigned int rpm[] = {0, 0};
 unsigned long m_tim_last[] = {0, 0};
@@ -87,11 +90,17 @@ void motor_read(void) {
   motor_read_update(1);
 }
 
+int bumper_evasion = 0;
+
 void motor_control() {  
   // control indicator (0 == stop)
   byte m_ctl = 0; 
   // set speed for default and fallback commands
   byte m_velocity = M_SPEED;
+  
+  if (highSpeedMode) {
+    m_velocity = M_SPEED_HIGH;
+  }
   
   m_ctl = get_keycommand();
   
@@ -101,8 +110,17 @@ void motor_control() {
   }
   
   // front bumpers
-  if (bumper_hit()) {
-    // move back when bumper was hit
+  if (bumper_hit() && m_ctl != 2) {
+    // stop forward movement when bumper was hit
+    m_ctl = 0;
+    
+    bumper_evasion = bumper_evasion + 1;
+  } else if (!bumper_hit()) {
+    bumper_evasion = 0;
+  }
+  
+  if (bumper_evasion > 3) {
+    // move back when bumper was hit multiple cycles
     m_ctl = 2;
   }
   
@@ -118,12 +136,25 @@ void motor_control() {
       break;
     case 2:
       motor_back(m_velocity, m_velocity);
+      if (bumper_evasion > 3) {
+        m_ctl = 0;
+        serialCommand = -1;
+        delay(500);
+        motor_stop();
+        bumper_evasion = 0;
+      }
       break;
     case 3:
       motor_left(m_velocity, m_velocity);
       break;
     case 4:
       motor_right(m_velocity, m_velocity);
+      break;
+    case 5:
+      highSpeedMode = true;
+      break;
+    case 6: 
+      highSpeedMode = false;
       break;
     case 0:
     default:

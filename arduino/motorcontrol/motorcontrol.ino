@@ -76,6 +76,12 @@ void serial_read() {
         case 117:
           serialCommand = 9;
           break;
+        case 105: // i - high speed mode
+          serialCommand = 5;
+          break;
+        case 107: // k - regular speed mode
+          serialCommand = 6;
+          break;
         default:
           serialCommand = -1;
           relayCommand = -1;
