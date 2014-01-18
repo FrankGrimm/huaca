@@ -23,31 +23,35 @@ class SerialState {
   };
   
   void serialEvent(Serial p) {
-    String inString = p.readString();
-    if (null != inString && !"".equals(inString)) {
-      inputBuffer = inputBuffer + inString;
-      if (inputBuffer.indexOf("{") > -1) {
-        // make sure buffer starts with a JSON message
-        inputBuffer = inputBuffer.substring(inputBuffer.indexOf("{"));
-      } 
-      
-      // process messages in the buffer on a line by line basis
-      String[] inputBufferLines = inputBuffer.split("\n");
-      int lineIndex = 0;
-      for (String line: inputBufferLines) {
-        String linedata = line.trim();
-        if (linedata.startsWith("{") && linedata.endsWith("}")) {
-          //println("L:<" + linedata + ">");
-          this.process(linedata);
-        } else if (lineIndex < (inputBufferLines.length - 1)) {
-          println("Malformed line: <" + linedata + ">");
-        } else {
-          // incomplete last line, keep in buffer
-          inputBuffer = line;
+    try {
+      String inString = p.readString();
+      if (null != inString && !"".equals(inString)) {
+        inputBuffer = inputBuffer + inString;
+        if (inputBuffer.indexOf("{") > -1) {
+          // make sure buffer starts with a JSON message
+          inputBuffer = inputBuffer.substring(inputBuffer.indexOf("{"));
+        } 
+        
+        // process messages in the buffer on a line by line basis
+        String[] inputBufferLines = inputBuffer.split("\n");
+        int lineIndex = 0;
+        for (String line: inputBufferLines) {
+          String linedata = line.trim();
+          if (linedata.startsWith("{") && linedata.endsWith("}")) {
+            //println("L:<" + linedata + ">");
+            this.process(linedata);
+          } else if (lineIndex < (inputBufferLines.length - 1)) {
+            println("Malformed line: <" + linedata + ">");
+          } else {
+            // incomplete last line, keep in buffer
+            inputBuffer = line;
+          }
+       
+          lineIndex++;
         }
-     
-        lineIndex++;
       }
+    } catch (Exception e) {
+      System.err.println(e.getMessage());
     }
   }
   
@@ -117,7 +121,7 @@ class SerialState {
       }
       
       if (parsedMessage.hasKey("rcvKey")) {
-        println("Key event: " + parsedMessage.getString("rcvKey"));
+        println("Key event: " + parsedMessage.getInt("rcvKey"));
         return;
       }
 

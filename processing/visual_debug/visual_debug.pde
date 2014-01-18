@@ -32,7 +32,10 @@ void draw() {
 }
 
 void keyPressed() {
-  if (key == 'w' || key == 'a' || key == 'd' || key == 's' || key == 'r' || key == 't' || key == 'g') {
+  if (key == 'w' || key == 'a' || key == 'd' || key == 's' || key == 'r' || key == 't' || key == 'g' || key == 'i' || key =='k') {
     ser.write(key);
+  } else {
+    print("Unsupported key: ");
+    println((int)key);
   }
 }
